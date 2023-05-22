@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Vehicle List</h1>
+
+  <div class="form">
+  <form method="GET" action="{% url 'vehicle_list' %}">
+    <input type="text" name="q" placeholder="Search by name, brand, price, or year" value="{{ request.GET.q }}">
+    <button type="submit">Search</button>
+  </form>
+  </div>
+
+  <div class="card-deck">
+    {% if vehicles %}
+    {% for vehicle in page_obj %}
+    <div class="card mb-4">
+      <img class="card-img-top" src="{{ vehicle.photo.url }}" alt="{{ vehicle.name }} photo">
+      <div class="card-body">
+        <h5 class="card-title"><a href="{% url 'vehicle_detail' vehicle.pk %}">{{ vehicle.name }} ({{ vehicle.brand }})</a></h5>
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">Year: {{ vehicle.year }}</li>
+        <li class="list-group-item">Price: ${{ vehicle.price }} /per day</li> 
+          {% if vehicle.avg_rating %}
+        <li>Average rating: {{ vehicle.avg_rating }}</li>
+        {% endif %}
+      </ul>
+    </div>
+  {% endfor %}
+
+  
+
+    {% else %}
+      <p>No vehicles found.</p>
+    {% endif %}
+    <nav aria-label="Page navigation">
+      <ul class="pagination">
+        {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}">Previous</a></li>
+        {% else %}
+        <li class="page-item disabled"><span class="page-link">Previous</span></li>
+        {% endif %}
+  
+        {% for page_num in page_obj.paginator.page_range %}
+        {% if page_obj.number == page_num %}
+        <li class="page-item active"><span class="page-link">{{ page_num }} <span class="sr-only">(current)</span></span></li>
+        {% else %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_num }}{% if query %}&q={{ query }}{% endif %}">{{ page_num }}</a></li>
+        {% endif %}
+        {% endfor %}
+  
+        {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}">Next</a></li>
+        {% else %}
+        <li class="page-item disabled"><span class="page-link">Next</span></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+{% endblock %}

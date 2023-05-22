@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+{% block content %}
+  <h1>Welcome To Lofty Car Rental Service</h1>
+
+  <form method="GET" action="{% url 'vehicle_list' %}">
+    <label for="q">Search for a Vehicle:</label>
+    <input type="text" name="q" placeholder="Search by name, brand, price, or year" value="{{ request.GET.q }}">
+    <button type="submit">Search</button>
+  </form>
+  <p>Thank you for choosing our car rental service.</p>
+
+  <img src="{% static 'img/car-7.jpg' %}" alt="Car Rental Homepage Image">
+  
+  <p>You have to register <a href="{% url 'signup' %}" class="btn btn-primary">Register</a>
+    and log in <a href="{% url 'login' %}" class="btn btn-primary">Log In</a> in order to use our services</p>
+
+    <p>Checkout the list of our available vehicles <a href="{% url 'vehicle_list' %}">here</a>.</p>
+
+  {% endblock %}

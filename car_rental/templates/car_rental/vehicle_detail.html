@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% load static%}
+
+{% load my_filters %}
+
+{% block head %}
+  <link rel="stylesheet" href="{% static 'css/star-rating.css' %}">
+{% endblock %}
+
+{% block content %}
+  {% if user.is_authenticated %}
+    <h1>{{ vehicle.name }}</h1>
+    <img src="{{ vehicle.photo.url }}" alt="{{ vehicle.name }}">
+
+    <p><strong>Brand:</strong> {{ vehicle.brand }}</p>
+    <p><strong>Year:</strong> {{ vehicle.year }}</p>
+    <p><strong>Description:</strong> {{ vehicle.description }}</p>
+    <p><strong>Price:</strong> ${{ vehicle.price }} /per day</p>
+
+    <h2>Rating and Reviews</h2>
+    {% if ratings.count > 0 %}
+      <p>Average Rating: {{ average_rating }}</p>
+      <ul>
+      {% for rating in ratings %}
+        <li>
+          <p><strong>{{ rating.user.username }}</strong></p>
+          <ul class="star-rating">
+            {% for i in rating.value|get_range %}
+                {% if i <= rating.value %}
+                    <span class="fa fa-star checked"></span>
+                {% else %}
+                    <span class="fa fa-star"></span>
+                {% endif %}
+            {% endfor %}
+          </ul>
+          {% if rating.review %}
+            <p>{{ rating.review }}</p>
+          {% endif %}
+        </li>
+      {% empty %}
+        <li>No ratings yet.</li>
+      {% endfor %}
+      </ul>
+    {% else %}
+      <p>No ratings yet.</p>
+    {% endif %}
+    {% if user.is_authenticated and not user.is_superuser or user.is_staff %}
+    <p><a href="{% url 'vehicle_rating_create' vehicle.id %}" class="btn btn-primary">Rate this vehicle</a></p>
+    <p><a href="{% url 'rental_request_create' vehicle.id %}" class="btn btn-primary">Rent this vehicle</a></p>
+  {% else %}
+    <p>You must be registered and logged in order to use our service</p>
+    <a href="{% url 'register' %}" class="btn btn-primary">Register</a>
+    <a href="{% url 'login' %}" class="btn btn-primary">Log In</a>
+  {% endif %}
+{% endblock %}

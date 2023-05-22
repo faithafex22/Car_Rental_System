@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Rental Requests</h1>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Vehicle</th>
+        
+        <th scope="col">Status</th>
+        {% if request.user.is_staff %}
+          <th scope="col">User</th>
+        {% endif %}
+        <th scope="col">Detail</th>
+        
+      </tr>
+    </thead>
+    <tbody>
+      {% for rental_request in rental_requests %}
+        <tr>
+          <th scope="row">{{ rental_request.id }}</th>
+          <td>{{ rental_request.vehicle.name }}</td>
+          
+          <td>{{ rental_request.status }}</td>
+          {% if request.user.is_staff %}
+            <td>{{ rental_request.user.username }}</td>
+          {% endif %}
+          <td><a href="{% url 'rental_request_detail' rental_request.id %}">Detail</a></td>
+          
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="{% if request.user.is_staff %}7{% else %}6{% endif %}">No rental requests found.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

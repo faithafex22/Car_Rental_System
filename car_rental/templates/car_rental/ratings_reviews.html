@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Vehicle Ratings</h1>
+  <table class="table table-striped table-hover">
+    <thead>
+      <tr>
+        <th>Vehicle Name</th>
+        <th>Average Rating</th>
+        <th>Reviews</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for vehicle_rating in vehicle_ratings %}
+        <tr>
+          <td>{{ vehicle_rating.vehicle.name }}</td>
+          <td>{{ vehicle_rating.average_rating|default:"N/A" }}</td>
+          <td>
+            {% if vehicle_rating.reviews %}
+              <ul>
+                {% for rating in vehicle_rating.reviews %}
+                  <li>{{ rating.review }} - {{ rating.user.username }}</li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              No reviews yet.
+            {% endif %}
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="3">No vehicle ratings found.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+
+<style>
+  table {
+    margin-top: 20px;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+  
+  ul {
+    margin: 0;
+    padding-left: 20px;
+  }
+  
+  li {
+    margin: 5px 0;
+  }
+</style>

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Rate {{ vehicle.name }}</h1>
+  <form method="post">
+    {% csrf_token %}
+    <div>
+      <label for="id_value">Rating:</label>
+      <select id="id_value" name="value">
+        {% for choice in form.value.field.choices %}
+          <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label for="id_review">Review:</label>
+      <textarea id="id_review" name="review" rows="3" cols="40">{{ form.review.value }}</textarea>
+    </div>
+    <button type="submit">Submit</button>
+  </form>
+{% endblock %}

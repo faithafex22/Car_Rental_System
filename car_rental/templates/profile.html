@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>My Profile</h1>
+  <p><strong>Name:</strong> {{ profile.user.get_full_name }}</p>
+  <p><strong>Email:</strong> {{ profile.user.email }}</p>
+  <p><strong>Phone Number:</strong> {{ profile.phone_number }}</p>
+  <p><strong>Address:</strong> {{ profile.address }}</p>
+  <p><strong>Bio:</strong> {{ profile.bio }}</p>
+  <a href="{% url 'profile_update' %}">Update Profile</a>
+{% endblock %}

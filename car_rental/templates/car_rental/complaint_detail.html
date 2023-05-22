@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Complaint Details</h2>
+  <hr>
+  <h6>Complaint by: {{ complaint.user.username }}</h6>
+  <p>Vehicle: {{ complaint.vehicle.name }}</p>
+  <p>Status: {{ complaint.status }}<p>
+  <p>Complaint Description:</p>
+  <p>{{ complaint.description }}</p>
+  {% if complaint.reply %}
+    <p><strong>Reply:</strong> {{ complaint.reply }}</p>
+    {% endif %}
+  <p>Date Created: {{ complaint.created_at }}<p>
+  <p>Last Updated: {{ complaint.updated_at }}<p>
+  {% if user.is_superuser or user.is_staff%}
+  <a href="{% url 'complaint_update' complaint.pk %}" class="btn btn-secondary">Update Status</a>
+  {% endif %}
+  <hr>
+  <a href="{% url 'complaint_list' %}" class="btn btn-secondary">Back to Complaint List</a>
+{% endblock %}
