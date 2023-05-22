@@ -48,9 +48,9 @@
     {% if user.is_authenticated and not user.is_superuser or user.is_staff %}
     <p><a href="{% url 'vehicle_rating_create' vehicle.id %}" class="btn btn-primary">Rate this vehicle</a></p>
     <p><a href="{% url 'rental_request_create' vehicle.id %}" class="btn btn-primary">Rent this vehicle</a></p>
-  {% else %}
+    {% else %}
     <p>You must be registered and logged in order to use our service</p>
     <a href="{% url 'register' %}" class="btn btn-primary">Register</a>
     <a href="{% url 'login' %}" class="btn btn-primary">Log In</a>
-  {% endif %}
+    {% endif %}
 {% endblock %}
