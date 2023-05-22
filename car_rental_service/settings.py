@@ -107,7 +107,7 @@ WSGI_APPLICATION = 'car_rental_service.wsgi.application'
 # }
 
 DATABASES= {
-    'default': dj_database_url.config(default='postgresql://postgres:Smcbif9UK5qMX1p1zREo@containers-us-west-29.railway.app:7760/railway', conn_max_age=1800 )
+    'default': dj_database_url.config(default=DATABASE_URL, conn_max_age=1800 )
     }
 
 
