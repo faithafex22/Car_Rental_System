@@ -271,6 +271,7 @@ class RentalReturnCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView
         rental_request = get_object_or_404(RentalRequest, id=self.kwargs['rental_request_id'])
         form.fields['rental_request'].queryset = RentalRequest.objects.filter(id=rental_request.id)
         form.fields['vehicle'].queryset = Vehicle.objects.filter(id=rental_request.vehicle.id)
+        form.instance.user = self.request.user
         return form
 
     def form_valid(self, form):
@@ -339,12 +340,14 @@ class ReassignVehicleView(LoginRequiredMixin, UserPassesTestMixin, FormView):
         rental_request = get_object_or_404(RentalRequest, id=self.kwargs['rental_request_id'])
         form.fields['rental_request'].queryset = RentalRequest.objects.filter(id=rental_request.id)
         form.fields['vehicle'].queryset = Vehicle.objects.filter(status='available')
+        form.fields['user'].queryset = self.request.user
+        
         return form
 
     def form_valid(self, form):
         rental_request = form.cleaned_data['rental_request']
         vehicle = form.cleaned_data['vehicle']
-        reassigned_by = self.request.user
+        reassigned_by = form.cleaned_data['user']
         Reassignment.objects.create(
             rental_request=rental_request,
             vehicle=vehicle,
