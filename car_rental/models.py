@@ -119,7 +119,7 @@ class RentalReturn(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'Return of {self.vehicle.name} by {self.user.username}'
+        return f'Return of {self.vehicle.name} by {self.rental_request}'
 
 
 class Reassignment(models.Model):
