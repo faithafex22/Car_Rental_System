@@ -38,9 +38,9 @@
             <p>{{ rating.review }}</p>
           {% endif %}
         </li>
+      {% endfor %}
       {% empty %}
         <li>No ratings yet.</li>
-      {% endfor %}
       </ul>
     {% else %}
       <p>No ratings yet.</p>
