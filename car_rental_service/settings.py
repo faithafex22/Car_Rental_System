@@ -106,7 +106,7 @@ WSGI_APPLICATION = 'car_rental_service.wsgi.application'
 #     }
 # }
 
-DATABASES= {
+DATABASES = {
     'default': dj_database_url.config(default=DATABASE_URL, conn_max_age=1800 )
     }
 
@@ -205,4 +205,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-CSRF_TRUSTED_ORIGINS = ['https://my-carrental-2-production.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['https://carrentalsystem-production.up.railway.app/']
