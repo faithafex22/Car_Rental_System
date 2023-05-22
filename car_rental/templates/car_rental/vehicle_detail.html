@@ -24,21 +24,12 @@
       <ul>
       {% for rating in ratings %}
         <li>
-          <p><strong>{{ rating.user.username }}</strong></p>
-          <ul class="star-rating">
-            {% for i in rating.value|get_range %}
-                {% if i <= rating.value %}
-                    <span class="fa fa-star checked"></span>
-                {% else %}
-                    <span class="fa fa-star"></span>
-                {% endif %}
-            {% endfor %}
-          </ul>
           {% if rating.review %}
             <p>{{ rating.review }}</p>
           {% endif %}
         </li>
       {% endfor %}
+      </ul>
     {% else %}
       <p>No ratings yet.</p>
     {% endif %}
