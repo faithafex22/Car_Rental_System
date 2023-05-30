@@ -16,8 +16,6 @@
     {% endif %}
   
   {% if user.is_superuser or user.is_staff%}
-  <a href="{% url 'complaint_update' complaint.pk %}" class="btn btn-secondary">Update Status</a>
+  <a href="{% url 'complaint_update' complaint.pk %}" class="btn btn-primary">Update Status</a>
   {% endif %}
-  <hr>
-  <a href="{% url 'complaint_list' %}" class="btn btn-secondary">Back to Complaint List</a>
 {% endblock %}

@@ -21,8 +21,5 @@
     <a href="{% url 'reassign_vehicle' rental_request.pk %}" class="btn btn-primary">Reassign Vehicle</a>
     <a href="{% url 'rental_return_create' rental_request.pk %}" class="btn btn-primary">Create Request Return</a>
     
-    {% endif %}
-    <hr>
-    <a href="{% url 'rental_request_list' %}" class="btn btn-primary">Back to Requests List</a>
-    
+    {% endif %} 
 {% endblock %}

@@ -247,7 +247,7 @@ class RentalReturnCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView
     model = RentalReturn
     form_class = RentalReturnForm
     template_name = 'car_rental/rental_return_form.html'
-    success_url = reverse_lazy('rental_request_list')
+    success_url = reverse_lazy('rental_return_list')
 
     def test_func(self):
         return self.request.user.is_superuser or self.request.user.is_staff
