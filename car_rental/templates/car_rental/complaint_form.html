@@ -1,10 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>Submit a Complaint</h1>
+  <h1>Create Complaint</h1>
+  <p>You want to make a complaint on a particular vehicle? select the vehicle and write your complaint in the description box <p>
+  <p>Got any other complaint, write it directly in the decsription box<p>
+
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Submit</button>
+  <button type="submit">Submit</button>
   </form>
+
 {% endblock %}
+

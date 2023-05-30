@@ -23,6 +23,8 @@
         <li class="list-group-item">Price: ${{ vehicle.price }} /per day</li> 
           {% if vehicle.avg_rating %}
         <li class="list-group-item">Average rating: {{ vehicle.avg_rating }}</li>
+        {% else %}
+        <li class="list-group-item">No rating yet</li>
         {% endif %}
       </ul>
     </div>

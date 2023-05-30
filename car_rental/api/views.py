@@ -103,6 +103,7 @@ class RatingCreateAPIView(generics.CreateAPIView):
         serializer.save(user=self.request.user)
 
 
+
 class RentalRequestCreateAPIView(generics.CreateAPIView):
     serializer_class = RentalRequestCreateSerializer
     permission_classes = [IsAuthenticated]
@@ -143,6 +144,7 @@ class RentalRequestDetailAPIView(generics.RetrieveAPIView):
         if not self.request.user.is_staff and obj.user != self.request.user:
             raise PermissionDenied()
         return obj
+    
 
 class RentalRequestDecisionAPIView(generics.UpdateAPIView):
     queryset = RentalRequest.objects.all()
@@ -163,6 +165,7 @@ class RentalRequestDecisionAPIView(generics.UpdateAPIView):
             rental_request.is_completed = False
         rental_request.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
 
 class MarkRentalRequestCompleted(APIView):
     def post(self, request, rental_request_id, format=None):

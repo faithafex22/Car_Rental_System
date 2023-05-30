@@ -58,14 +58,6 @@ class RentalRequestForm(forms.ModelForm):
     class Meta:
         model = RentalRequest
         fields = ['vehicle', 'start_date', 'end_date']
-        
-class RentalRequestMarkAsDoneForm(forms.Form):
-    rental_request = forms.ModelChoiceField(
-        queryset=RentalRequest.objects.filter(status='approved', is_returned=True, is_completed=False),
-        label='Select a rental request to mark as done',
-        widget=forms.Select(attrs={'class': 'form-control'}),
-        empty_label=None,
-    )
 
     def clean(self):
         cleaned_data = super().clean()
@@ -73,27 +65,25 @@ class RentalRequestMarkAsDoneForm(forms.Form):
         end_date = cleaned_data.get('end_date')
         if end_date and start_date:
             if end_date < start_date:
-                raise ValidationError('End date cannot be earlier than start date')
-            
- 
+                raise ValidationError('End date cannot be earlier than start date')     
+
+   
 class RentalReturnForm(forms.ModelForm):
     class Meta:
         model = RentalReturn
-        fields = ['rental_request', 'vehicle', 'vehicle_state',  'return_date']       
+        fields = ['rental_request', 'vehicle', 'vehicle_state',  'return_date']  
 
-
+    
 class ComplaintForm(forms.ModelForm):
     class Meta:
         model = Complaint
-        fields = ['vehicle', 'description']
-        widgets = {
-            'description': forms.Textarea(attrs={'rows': 5}),
-        }
+        fields = [ 'vehicle', 'description']
+        
         
 class ReassignmentForm(forms.ModelForm):
     class Meta:
         model = Reassignment
-        fields = ['rental_request', 'vehicle']
+        fields = ['rental_request', 'vehicle', 'reassigned_by']
 
 
         

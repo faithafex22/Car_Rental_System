@@ -6,8 +6,10 @@
     <thead>
       <tr>
         <th>Vehicle</th>
-        <th>User</th>
         <th scope="col">Status</th>
+        {% if request.user.is_staff %}
+          <th scope="col">User</th>
+        {% endif %}
         <th scope="col">Detail</th>
       </tr>
     </thead>
@@ -15,8 +17,10 @@
       {% for complaint in complaints %}
         <tr>
           <td>{{ complaint.vehicle }}</td>
-          <td>{{ complaint.user }}</td>
           <td>{{ complaint.status }}</td>
+          {% if request.user.is_staff %}
+            <td>{{ complaint.user.username }}</td>
+          {% endif %}
           <td><a href="{% url 'complaint_detail' complaint.id %}">Detail</a></td>
         </tr>
       {% empty %}

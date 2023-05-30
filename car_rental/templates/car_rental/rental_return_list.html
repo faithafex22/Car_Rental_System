@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Rental Returns</h1>
+
+  {% if rental_returns %}
+    <table class='table'>
+      <thead>
+        <tr>
+          <th>Rental Request</th>
+          <th>Vehicle</th>
+          <th>Vehicle_status</th>
+          <th>Return Date</th>
+          <th>Request_status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for rental_return in rental_returns %}
+          <tr>
+            <td>{{ rental_return.rental_request }}</td>
+            <td>{{ rental_return.vehicle }}</td>
+            <td>{{ rental_return.vehicle_state }}</td>
+            <td>{{ rental_return.return_date }}</td>
+            {% if rental_return.rental_request.is_completed %}
+            <td><h6>Done</h6></td>
+            {% endif %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No rental returns found.</p>
+  {% endif %}
+{% endblock %}
+
+
+<style>
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  th, td {
+    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  th {
+    background-color: #f2f2f2;
+  }
+  
+  tr:hover {
+    background-color: #f5f5f5;
+  }
+</style>

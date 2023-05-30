@@ -6,7 +6,8 @@
     <p><strong>Start Date:</strong> {{ rental_request.start_date }}</p>
     <p><strong>End Date:</strong> {{ rental_request.end_date }}</p>
     <p><strong>Status:</strong> {{ rental_request.status }}</p>
-    <p><strong>Done:</strong> {{ rental_request.is_completed }}</p>
+    <p><strong>Returned:</strong> {{ rental_request.is_returned|yesno|title }}</p>
+    <p><strong>Done:</strong> {{ rental_request.is_completed|yesno|title }}</p>
     {% if rental_request.status == 'rejected' %}
         <p><strong>Rejection Reason:</strong> {{ rental_request.reason }}</p>
     {% elif rental_request.status == 'approved' %}
@@ -14,15 +15,14 @@
         <p>The total cost of your request is ${{rental_request.total_cost}}<p>
     {% endif %} 
     {% if not user.is_superuser and not user.is_staff%}
-    <a href="{% url 'complaint_create' %}" class="btn btn-secondary">Got any complaint?, drop it here</a>
     {% endif %}
     {% if user.is_superuser or user.is_staff %}
-    <a href="{% url 'rental_request_decision'  rental_request.pk %}" class="btn btn-secondary">Update Request Status</a>
-    <a href="{% url 'reassign_vehicle' rental_request.pk %}" class="btn btn-secondary">Reassign Vehicle</a>
-    <a href="{% url 'rental_return_create' rental_request.pk %}" class="btn btn-secondary">Create Request Return</a>
-    <a href="{% url 'mark_as_done' rental_request.pk %}" class="btn btn-secondary">Mark Request As Done</a>
+    <a href="{% url 'rental_request_decision'  rental_request.pk %}" class="btn btn-primary">Update Request Status</a>
+    <a href="{% url 'reassign_vehicle' rental_request.pk %}" class="btn btn-primary">Reassign Vehicle</a>
+    <a href="{% url 'rental_return_create' rental_request.pk %}" class="btn btn-primary">Create Request Return</a>
+    
     {% endif %}
     <hr>
-    <a href="{% url 'rental_request_list' %}" class="btn btn-secondary">Back to Requests List</a>
+    <a href="{% url 'rental_request_list' %}" class="btn btn-primary">Back to Requests List</a>
     
 {% endblock %}

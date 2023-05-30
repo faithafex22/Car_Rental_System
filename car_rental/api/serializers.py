@@ -26,8 +26,6 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
-
-
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()
@@ -60,6 +58,7 @@ class VehicleRatingSerializer(serializers.Serializer):
                 'user': rating.user.username
             })
         return reviews_data
+
 
 class VehicleSerializer(serializers.ModelSerializer):
     avg_rating = serializers.SerializerMethodField()
@@ -115,4 +114,3 @@ class ReassignmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reassignment
         fields = ['rental_request_id', 'vehicle_id', 'reassigned_by']
-    

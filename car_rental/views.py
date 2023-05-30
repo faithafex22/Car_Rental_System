@@ -12,9 +12,9 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from .models import UserProfile, Vehicle, Rating, RentalRequest, RentalReturn, Complaint, Reassignment
 from django.shortcuts import get_object_or_404
-from .forms import UserCreationFormWithProfile, LoginForm, LogoutForm, UserProfileForm, RatingForm, RentalReturnForm , RentalRequestMarkAsDoneForm
+from .forms import UserCreationFormWithProfile, LoginForm, LogoutForm, UserProfileForm, RatingForm, RentalReturnForm
 from .forms import RentalRequestForm, ComplaintForm, ReassignmentForm
-
+from django.contrib.auth.models import User
 
 
 class SignUpView(CreateView):
@@ -128,6 +128,7 @@ class VehicleListView(ListView ):
 
         return context
 
+
 class VehicleDetailView(LoginRequiredMixin, DetailView):
     model = Vehicle
     template_name = 'car_rental/vehicle_detail.html'
@@ -184,7 +185,7 @@ class RentalRequestCreateView(LoginRequiredMixin, CreateView):
             form.instance.status = 'pending'
             form.save()
 
-            if form.cleaned_data['status'] == 'approved':
+            if form.instance.status == 'approved':
                 vehicle.status = 'rented'
                 vehicle.save()
 
@@ -212,6 +213,16 @@ class RentalRequestDetailView(LoginRequiredMixin, DetailView):
     context_object_name = 'rental_request'
 
 
+class RentalRequestUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = RentalRequest
+    fields = ['start_date', 'end_date']
+    template_name = 'car_rental/rental_request_decision.html'
+    success_url = reverse_lazy('rental_request_list')
+
+    def test_func(self):
+        return self.request.user.is_superuser or self.request.user.is_staff
+
+
 class RentalRequestDecisionView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = RentalRequest
     fields = ['status', 'reason']
@@ -231,31 +242,6 @@ class RentalRequestDecisionView(LoginRequiredMixin, UserPassesTestMixin, UpdateV
         rental_request.save()
         return super().form_valid(form)
     
-    
-class RentalRequestMarkAsDoneView(LoginRequiredMixin, UserPassesTestMixin, FormView):
-    template_name = 'car_rental/rental_request_done.html'
-    form_class = RentalRequestMarkAsDoneForm
-    success_url = reverse_lazy('rental_request_list')
-
-    def test_func(self):
-        return self.request.user.is_superuser or self.request.user.is_staff
-            
-    def form_valid(self, form):
-        rental_request = form.cleaned_data['rental_request']
-        if rental_request.is_returned:
-            rental_request.is_completed = True
-            rental_request.save()
-        else:
-            raise Http404('This rental request cannot be marked as done until it is returned.')
-        return super().form_valid(form)
-
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class=form_class)
-        rental_request = get_object_or_404(RentalRequest, id=self.kwargs['rental_request_id'])
-        form.fields['rental_request'].queryset = RentalRequest.objects.filter(id=rental_request.id)
-        return form
-
-    
 
 class RentalReturnCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = RentalReturn
@@ -271,23 +257,40 @@ class RentalReturnCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView
         rental_request = get_object_or_404(RentalRequest, id=self.kwargs['rental_request_id'])
         form.fields['rental_request'].queryset = RentalRequest.objects.filter(id=rental_request.id)
         form.fields['vehicle'].queryset = Vehicle.objects.filter(id=rental_request.vehicle.id)
-        form.instance.user = self.request.user
         return form
 
     def form_valid(self, form):
         rental_request = get_object_or_404(RentalRequest, id=self.kwargs['rental_request_id'])
         if not rental_request.status == 'approved':
             raise Http404("The rental request must be approved before creating a rental return")
-        form.instance.vehicle = rental_request.vehicle
-        form.instance.return_date = date.today()
+
+        rental_return = form.save(commit=False)
+        rental_return.vehicle = rental_request.vehicle
+        rental_return.return_date = date.today()
 
         vehicle = rental_request.vehicle
         vehicle.status = 'available'
         vehicle.save()
-        
-        rental_request.delete()
+
+        rental_request.is_returned = True
+        rental_request.is_completed = True
+        rental_request.save()
+
+        rental_return.rental_request = rental_request
+        rental_return.save()
 
         return super().form_valid(form)
+
+
+
+class RentalReturnListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+    model = RentalReturn
+    template_name = 'car_rental/rental_return_list.html'
+    context_object_name = 'rental_returns'
+
+    def test_func(self):
+        return self.request.user.is_superuser or self.request.user.is_staff
+
 
 class ComplaintCreateView(LoginRequiredMixin, CreateView):
     model = Complaint
@@ -340,14 +343,14 @@ class ReassignVehicleView(LoginRequiredMixin, UserPassesTestMixin, FormView):
         rental_request = get_object_or_404(RentalRequest, id=self.kwargs['rental_request_id'])
         form.fields['rental_request'].queryset = RentalRequest.objects.filter(id=rental_request.id)
         form.fields['vehicle'].queryset = Vehicle.objects.filter(status='available')
-        form.fields['user'].queryset = self.request.user
+        form.fields['reassigned_by'].queryset = User.objects.filter(id=self.request.user.id)
         
         return form
 
     def form_valid(self, form):
         rental_request = form.cleaned_data['rental_request']
         vehicle = form.cleaned_data['vehicle']
-        reassigned_by = form.cleaned_data['user']
+        reassigned_by = form.cleaned_data['reassigned_by']
         Reassignment.objects.create(
             rental_request=rental_request,
             vehicle=vehicle,

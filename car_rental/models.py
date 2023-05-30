@@ -95,15 +95,18 @@ class Complaint(models.Model):
         ('solved', 'Solved'),
     ]
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
+    vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, blank=True, null=True)
     description = models.TextField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     reply = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        ordering = ['-id']
+
     def __str__(self):
-        return f'Complaint by {self.user.username} for {self.vehicle.name}'
+        return f'Complaint by {self.user.username}'
 
 
 class RentalReturn(models.Model):
@@ -118,8 +121,11 @@ class RentalReturn(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        ordering = ['-id']
+
     def __str__(self):
-        return f'Return of {self.vehicle.name} by {self.rental_request}'
+        return f'Return of {self.vehicle.name} for {self.rental_request}'
 
 
 class Reassignment(models.Model):
